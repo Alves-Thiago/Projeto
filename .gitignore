@@ -1,0 +1,11 @@
+# Evita versionar dependências instaladas localmente.
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+# Evita versionar arquivos de ambiente com configurações locais.
+.env
+backend/.env
+frontend/.env
+# Ignora arquivos gerados pelo Vite e logs locais.
+frontend/dist/
+*.log

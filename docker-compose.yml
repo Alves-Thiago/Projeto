@@ -1,0 +1,29 @@
+# Define os serviços que serão iniciados juntos pelo Docker Compose.
+services:
+  # Mantém o PostgreSQL isolado em um contêiner.
+  db:
+    # Usa uma imagem oficial do PostgreSQL.
+    image: postgres:16-alpine
+    # Dá ao contêiner um nome fácil de reconhecer.
+    container_name: techstock-db
+    # Cria banco, usuário e senha iniciais para desenvolvimento local.
+    environment:
+      POSTGRES_DB: techstock
+      POSTGRES_USER: techstock
+      POSTGRES_PASSWORD: techstock_dev
+    # Expõe o banco na máquina local e preserva os dados em um volume.
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    # Espera o PostgreSQL aceitar conexões antes de marcar o serviço saudável.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U techstock -d techstock"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+# Guarda os dados do banco mesmo depois que o contêiner for recriado.
+volumes:
+  postgres_data:
